@@ -1,53 +1,18 @@
-# Master Blueprint & PRD: Project "Omni-Twin" (Local AI Clone)
+# Architecture and Product Requirements Document (PRD)
 
 ## 1. Architectural Blueprint & Coding Philosophy
-Agent, this represents my strict standard for project structure. All code generated MUST adhere to these principles:
-* **The Numbered Pipeline:** Every project must be broken down into a strict, numbered sequence of execution.
-* **Single Responsibility:** Each script must have one clearly defined job. 
-* **Master Orchestrator:** There must always be a root-level master orchestrator (`run_app.py`).
+- **The Numbered Pipeline:** Every project must be broken down into a strict, numbered sequence of execution. We will not write the whole codebase at once.
+- **Single Responsibility:** Each script has one clearly defined job.
+- **OpenAI Gymnasium Compliance:** The core environment strictly adheres to the `gymnasium.Env` API standard, allowing any off-the-shelf RL library to interact with it natively.
 
 ## 2. Product Requirements
-**Objective:** Build a fully local desktop application that creates a "Digital Twin." The system will ingest data from WhatsApp, ChatGPT, and Gemini, unify it, and build a dual-layer intelligence system:
-1. **The Memory (RAG via `mem0ai`):** Do not build a vector DB from scratch. You MUST use the `mem0ai` Python package to extract entities and build a memory graph from my chat history.
-2. **The Vibe (LoRA via Unsloth - Cloud Export):** Because local GPUs are weak, the app will not train locally. It will format the data and generate a "Cloud Training Kit" (data + Unsloth Jupyter Notebook) to be run on a remote A100 (e.g., RunPod). 
-3. **Local Inference:** Use the `ollama` Python library to handle running the final downloaded model inside our CustomTkinter UI.
+**Objective:** Build a fully local, `pip`-installable Python package that acts as a bridge between classical Deep Reinforcement Learning and Neutral Atom Quantum Computing via wrapping Pasqal's `Pulser` simulator inside an OpenAI `Gymnasium` environment.
 
-**Data Prefiltering (The "Ultimate Mirror" Rules):**
-The `clean_03_unify_format.py` script must be smart. Implement these specific rules:
-* **Keep** time delays (long pauses between texts are fine).
-* **Keep** reaction texts if parsable to show spirit.
-* **Group Chat Filter:** Keep group chats ONLY IF my specific message count in that group is > 10. Discard groups where I am a ghost.
-* Merge rapid-fire double/triple texts from the same user into single blocks.
+### Definition of Boundaries
+1. **The Action Space:** For Version 1.0, the RL agent controls a 1D continuous variable: the **Amplitude** of a laser pulse (in rad/µs) applied to a register of atoms. Implemented as `gymnasium.spaces.Box`.
+2. **The Observation Space:** The marginal probabilities of each qubit being in the $|1\rangle$ state from the `Pulser` simulation. Length linearly scales with `n_qubits`. Implemented as `gymnasium.spaces.Box`.
+3. **The Reward Function:** A mathematical score evaluating how close the final quantum state is to solving a Maximum Independent Set (MIS) graph problem.
+4. **The Mock-First Rule:** Before integrating the heavy Pulser physics engine, `env_01_core.py` must be written and validated using dummy numpy arrays to ensure API compliance.
 
-## 3. The Overleaf / Whitepaper Requirement
-I require a continuously updated academic paper for this project. I have provided a `LATEX_TEMPLATE.tex` file in the workspace containing my preferred style. Every time you successfully complete a numbered step in the Python pipeline, you MUST update a `main.tex` file in the root directory documenting the engineering decisions, data shapes, and pipeline architecture.
-
-## 4. Required Directory Structure
-Scaffold the project using the following exact structure:
-
-Omni-Twin-App/
-├── README.md
-├── requirements.txt
-├── run_app.py                                     
-│
-├── Data_Local/                                    
-│   ├── 01_raw_exports/                            
-│   ├── 02_unified_jsonl/                          
-│   └── 03_cloud_training_kit/                     # Exported .jsonl + unsloth_train.ipynb
-│
-├── Models_Local/                                  
-│   └─ twin_4bit_lora/                             # Where I will drop the cloud-trained model
-│
-└── Src/                                           
-    ├─ ui_00_main_window.py                        
-    ├─ ingest_01_socials.py                        
-    ├─ ingest_02_ai_history.py                     
-    ├─ clean_03_unify_format.py                    
-    ├─ memory_04_build_mem0.py                     # Integrates mem0ai
-    ├─ export_05_cloud_training_kit.py             # Packages data + Unsloth notebook
-    └─ infer_06_agentic_chat.py                    # Integrates mem0 + Ollama
-
-## First Task
-Agent, review this entire document. Acknowledge my numbered pipeline philosophy, the strict reliance on `mem0ai` and `ollama` packages, the remote A100 training workflow, the specific data cleaning rules, and the LaTeX documentation rule. 
-
-Then, independently scaffold the folder structure, write `requirements.txt` (including mem0ai, ollama, custom-tkinter, pandas), generate `ui_00_main_window.py` (matching the pipeline steps), and generate the initial `main.tex` file based on my template.
+## 3. Developer Notes & Execution Pipeline
+- **Phase 1-6 Architecture Complete:** The `PulserEnv` securely generates waveforms using strict scaling limits and extracts 100-shot probability data deterministically from standard Reinforcement Learning Proximal Policy Optimization layers continuously without internal processing deadlocks.
