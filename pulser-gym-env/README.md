@@ -8,9 +8,15 @@ This project acts as a bridge between classical Deep Reinforcement Learning and 
 * **Phase 2 (Completed):** Develop the core Gymnasium environment with mock numpy arrays.
 * **Phase 3 (Completed):** Integrate Pulser sequence translation.
 * **Phase 4 (Completed):** Physics Engine Integration - Wired `env_01_core.py` with `QutipEmulator` and 100-shot deterministic sampling alongside MIS rewards.
-* **Phase 5:** Develop Stable-Baselines3 training and inference scripts.
+* **Phase 5 (Completed):** Develop Stable-Baselines3 training and inference scripts. Verified local 2,000-timestep execution stability via PPO mapping without computational deadlock.
 
 ## Setup Instructions
 ```bash
 pip install -r requirements.txt
+```
+
+### Execution (Phase 5 Proof of Concept)
+Run the training algorithm from the repository root directory to validate end-to-end mapping:
+```bash
+python scripts/train_05_ppo_agent.py
 ```
