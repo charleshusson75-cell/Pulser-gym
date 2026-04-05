@@ -3,7 +3,7 @@
 ## Overview
 This repository contains the architecture bridging classical Deep Reinforcement Learning with Neutral Atom Quantum Computing. By wrapping Pasqal's Pulser emulator inside a strict OpenAI Gymnasium environment, we dynamically translate RL deterministic parameters directly into physical laser waveforms operating over an $N$-qubit Register.
 
-📄 Read the full academic research paper source: [bridging_rl_quantum_paper.tex](bridging_rl_quantum_paper.tex)
+📄 Read the full academic research paper source: [bridging_rl_quantum_paper.pdf](bridging_rl_quantum_paper.pdf)
 
 ## 📂 Project Structure
 The architecture is strictly modular following the Single Responsibility Principle, separating sequence translation, physics emulation, and scoring into sequential execution topologies to prevent decoupled data leakage.
