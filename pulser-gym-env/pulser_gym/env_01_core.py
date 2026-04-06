@@ -14,7 +14,7 @@ class PulserEnv(gym.Env):
     """
     metadata = {"render_modes": ["ansi"]}
 
-    def __init__(self, n_qubits=4):
+    def __init__(self, n_qubits=9):
         super(PulserEnv, self).__init__()
         self.n_qubits = n_qubits
         
@@ -59,8 +59,11 @@ class PulserEnv(gym.Env):
         # Array shape parsing from the bitstring metric
         self.state = np.array([float(char) for char in most_frequent_bitstring], dtype=np.float32)
         
-        # Evaluate standard graph parameters using deterministic mapping
-        reward = calculate_mis_reward(self.state)
+        # Extract atomic coordinates for 2D MIS penalty evaluation
+        coords = np.array([seq.register.qubits[q] for q in seq.register.qubit_ids])
+        
+        # Evaluate standard graph parameters using deterministic Euclidean mapping
+        reward = calculate_mis_reward(self.state, coords)
         
         # Termination conditions
         terminated = False

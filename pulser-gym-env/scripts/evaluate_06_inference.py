@@ -13,7 +13,7 @@ if __name__ == '__main__':
     print("--- Phase 6: PPO Agent Inference & Evaluation ---")
     
     # 1. Instantiate the physical bridge environment
-    env = PulserEnv(n_qubits=4)
+    env = PulserEnv(n_qubits=9)
     
     # 2. Load the trained model artifacts
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

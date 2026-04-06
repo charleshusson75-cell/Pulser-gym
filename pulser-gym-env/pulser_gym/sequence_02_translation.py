@@ -11,8 +11,10 @@ def build_pulse_sequence(n_qubits: int, action: np.ndarray) -> Sequence:
     # Scale normalized action [0.0, 1.0] to physical amplitude [0.0, 10.0] rad/µs
     amplitude = float(action[0]) * 10.0
     
-    # Build a 1D Register of atoms spaced by 5 micrometers
-    reg = Register.rectangle(1, n_qubits, spacing=5.0)
+    # Build a 2D Square Register of atoms spaced by 5 micrometers
+    # Uses square root of n_qubits to determine grid size (e.g. 9 -> 3x3)
+    side_length = int(np.sqrt(n_qubits))
+    reg = Register.square(side_length, spacing=5.0)
     
     # Initialize a Sequence using the register and MockDevice
     seq = Sequence(reg, MockDevice)

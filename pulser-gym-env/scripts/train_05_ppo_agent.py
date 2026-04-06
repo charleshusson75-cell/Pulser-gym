@@ -10,8 +10,9 @@ from pulser_gym.env_01_core import PulserEnv
 if __name__ == '__main__':
     print("--- Phase 5: PPO Agent Training Initialization ---")
     
-    # 1. Instantiate the physical bridge environment deterministically
-    env = PulserEnv(n_qubits=4)
+    # 1. Initialize the Bridge Environment for 2D Grid
+    print("Instantiating PulserEnv for 9 Qubits (3x3 grid)...")
+    env = PulserEnv(n_qubits=9)
     
     # 2. Setup the Proximal Policy Optimization (PPO) agent
     print("Loading Stable-Baselines3 PPO algorithm mapped with MlpPolicy...")
