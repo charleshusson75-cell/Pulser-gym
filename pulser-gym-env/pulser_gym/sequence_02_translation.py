@@ -14,7 +14,7 @@ def build_pulse_sequence(n_qubits: int, action: np.ndarray) -> Sequence:
     # Build a 2D Square Register of atoms spaced by 5 micrometers
     # Uses square root of n_qubits to determine grid size (e.g. 9 -> 3x3)
     side_length = int(np.sqrt(n_qubits))
-    reg = Register.square(side_length, spacing=5.0)
+    reg = Register.square(side_length, spacing=5.0, prefix='q')
     
     # Initialize a Sequence using the register and MockDevice
     seq = Sequence(reg, MockDevice)
