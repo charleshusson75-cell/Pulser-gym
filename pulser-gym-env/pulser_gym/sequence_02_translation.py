@@ -8,8 +8,10 @@ def build_pulse_sequence(n_qubits: int, action: np.ndarray) -> Sequence:
     Strictly translates a Gym action into a Pasqal Sequence.
     Does not simulate the Sequence (Single Responsibility Principle).
     """
-    # Scale normalized action [0.0, 1.0] to physical amplitude [0.0, 10.0] rad/µs
+    # Amplitude: [0, 1] -> [0, 10] rad/µs
+    # Detuning:  [0, 1] -> [-20, 20] rad/µs
     amplitude = float(action[0]) * 10.0
+    detuning = (float(action[1]) * 40.0) - 20.0
     
     # Build a 2D Square Register of atoms spaced by 5 micrometers
     # Uses square root of n_qubits to determine grid size (e.g. 9 -> 3x3)
@@ -24,7 +26,7 @@ def build_pulse_sequence(n_qubits: int, action: np.ndarray) -> Sequence:
     
     # Create the ConstantWaveforms for amplitude and detuning
     amp_wf = ConstantWaveform(duration=1000, value=amplitude)
-    det_wf = ConstantWaveform(duration=1000, value=0.0)
+    det_wf = ConstantWaveform(duration=1000, value=detuning)
     
     # Create the Pulse with Phase 0
     pulse = Pulse(amplitude=amp_wf, detuning=det_wf, phase=0.0)

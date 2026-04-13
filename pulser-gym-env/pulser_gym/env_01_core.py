@@ -9,8 +9,8 @@ from pulser_gym.reward_03_mis_scoring import calculate_mis_reward
 class PulserEnv(gym.Env):
     """
     OpenAI Gymnasium wrapper for Pasqal's Pulser.
-    V1.0 uses a 1D continuous action space (Amplitude in rad/microsec)
-    and observation space of bitstring probabilities (mocked).
+    V2.0 uses a 2D continuous action space (Amplitude and Detuning)
+    and observation space of bitstring probabilities.
     """
     metadata = {"render_modes": ["ansi"]}
 
@@ -18,9 +18,9 @@ class PulserEnv(gym.Env):
         super(PulserEnv, self).__init__()
         self.n_qubits = n_qubits
         
-        # Action space: 1D continuous variable: Amplitude (scaled, typically 0 to 10 rad/µs)
-        # We use a normalized space [0, 1] as recommended by RL best practices
-        self.action_space = spaces.Box(low=0.0, high=1.0, shape=(1,), dtype=np.float32)
+        # Action space: 2D continuous variables [Amplitude, Detuning]
+        # Normalized space [0, 1] for both; mapped physically during translation
+        self.action_space = spaces.Box(low=0.0, high=1.0, shape=(2,), dtype=np.float32)
         
         # Observation space: marginal probabilities for each qubit
         self.observation_space = spaces.Box(low=0.0, high=1.0, shape=(self.n_qubits,), dtype=np.float32)
