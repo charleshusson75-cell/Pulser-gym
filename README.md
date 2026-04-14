@@ -1,62 +1,73 @@
-# Pulser-gym: Quantum RL Environment
+# Pulser-gym: Quantum RL wrapper
 
-🚧 **Status: Active Development (Work in Progress)**
-
-> This repository is currently under active development. The core Gymnasium wrapper (v2.0) is functional, and we have successfully integrated simultaneous Amplitude and Detuning control. Further research into multi-qubit lattice optimization is ongoing.
+**Status: Under construction**
 
 ## Overview
-This repository provides a Gymnasium-compatible wrapper for Pasqal's Pulser library, enabling the application of Deep Reinforcement Learning (DRL) to neutral atom quantum control. The environment translates agent actions into physical laser waveforms targeting an $N$-qubit register.
+This repository contains the architecture bridging classical deep reinforcement learning with neutral atom quantum computing. By wrapping Pasqal's Pulser emulator inside a Gymnasium environment, the project translates RL parameters into physical laser waveforms operating over an $N$-qubit register.
 
-## Interactive Demo and Documentation
-- 📄 **Whitepaper**: [Download PDF](bridging_rl_quantum_paper.pdf)
-- 📈 **Interactive Demo**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/charleshusson75-cell/Pulser-gym/blob/main/demo.ipynb)
+## Try it out
+| Interactive demo | Academic paper |
+| :--- | :--- |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/charleshusson75-cell/Pulser-gym/blob/main/demo.ipynb) | [📄 Download PDF](bridging_rl_quantum_paper.pdf) |
 
-## Project Structure
-The repository is organized into a core environment package and auxiliary scripts for training and evaluation.
+You can explore the full quantum RL pipeline (visualizations, training, and inference) directly in your browser via Google Colab, or run the `demo.ipynb` locally.
+
+## Project structure
+The architecture is modular, separating sequence translation, physics emulation, and scoring to prevent data leakage.
 
 ```text
 Pulser-gym/
-├── bridging_rl_quantum_paper.pdf    # Academic whitepaper
-├── demo.ipynb                       # Interactive Jupyter notebook
-├── README.md                        # Documentation
-└── pulser-gym-env/                  # Environment submodule
-    ├── requirements.txt             # Dependencies
-    ├── pulser_gym/                  # Core logic
-    │   ├── env_01_core.py           # Gymnasium class
-    │   ├── sequence_02_translation.py # Physics mapping
-    │   └── reward_03_mis_scoring.py # MIS scoring logic
-    ├── tests/                       # Validation suite
-    └── scripts/                     # RL implementation
-        ├── train_05_ppo_agent.py    # PPO training
-        └── evaluate_06_inference.py # Inference and plotting
+├── bridging_rl_quantum_paper.pdf                  # Academic whitepaper
+├── demo.ipynb                                     # Interactive Jupyter demo
+├── README.md                                      # Project documentation
+│
+└── pulser-gym-env/                                # Environment submodule
+    ├── requirements.txt                           # Python dependencies
+    │
+    ├── pulser_gym/                                # Core environment package
+    │   ├── __init__.py                                
+    │   ├── env_01_core.py                         # Gymnasium environment
+    │   ├── sequence_02_translation.py             # Action-to-pulse mapping
+    │   └── reward_03_mis_scoring.py               # MIS scoring logic
+    │
+    ├── tests/                                     # Validation environments
+    │   └── test_04_env_validation.py              # Physics execution checks
+    │
+    └── scripts/                                   # Interaction layer
+        ├── train_05_ppo_agent.py                  # PPO training script
+        └── evaluate_06_inference.py               # Evaluation and plotting
 ```
 
 ## Methodology
-The environment maps classical control parameters into a quantum Hamiltonian simulation:
+The pipeline maps continuous gradients into quantum topologies:
+1. **Action space:** The agent controls a 2D vector for Amplitude ([0, 10] rad/us) and Detuning ([-20, 20] rad/us), mapped from a normalized [0, 1] range.
+2. **Observation protocol:** Hilbert-space scaling bottlenecks ($2^N$) are avoided by mapping the physics into a condensed marginal probability array of length $N$. Shot-based probability thresholds from the emulation layer filter quantum superposition to discrete states.
+3. **Penalty layer:** The reward function evaluates the measured bitstring over 2D atom coordinates. Each excited atom contributes +1.0; any two excited atoms within the $7.0\,\mu m$ Rydberg blockade radius incur a -2.0 penalty.
+4. **Machine learning integration:** Uses Stable-Baselines3 Proximal Policy Optimization (PPO) to navigate the Hamiltonian parameter space without compute deadlocks.
 
-1. **Action Space**: A 2D continuous vector representing laser Amplitude ([0, 10] rad/us) and Detuning ([-20, 20] rad/us).
-2. **Observation Space**: A vector of length $N$ representing the marginal probabilities of each qubit being in the Rydberg state ($|1\rangle$).
-3. **Reward Function**: Assigned for the Maximum Independent Set (MIS) problem on 2D Euclidean lattices. Assigns +1.0 for each excited atom and a -2.0 penalty for blockade violations.
+## How to run / reproduce
+This environment is orchestrated sequentially.
 
-## Usage
-
-### 1. Installation
+1. **Install dependencies:**
 ```bash
 cd pulser-gym-env/
 pip install -r requirements.txt
 ```
 
-### 2. Validation
+2. **Run the validation suite:**
+Verify that the Gymnasium topology correctly maps into the backend physics layer:
 ```bash
 python tests/test_04_env_validation.py
 ```
 
-### 3. Training
+3. **Train the RL agent:**
+Execute the parameter optimization layer using Stable-Baselines3:
 ```bash
 python scripts/train_05_ppo_agent.py
 ```
 
-### 4. Inference
+4. **Launch inference & visualization:**
+Link generated parameters into rendering scripts to produce `eval_plot.png`:
 ```bash
 python scripts/evaluate_06_inference.py
 ```
