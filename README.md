@@ -1,72 +1,63 @@
-# Pulser-Gym: Quantum RL wrapper
+# Pulser-Gym: Quantum RL Environment
 
 ## Overview
-This repository contains the architecture bridging classical Deep Reinforcement Learning with Neutral Atom Quantum Computing. By wrapping Pasqal's Pulser emulator inside a strict OpenAI Gymnasium environment, we dynamically translate RL deterministic parameters directly into physical laser waveforms operating over an $N$-qubit Register.
+This repository provides a Gymnasium-compatible wrapper for Pasqal's Pulser library, enabling the application of Deep Reinforcement Learning (DRL) to neutral atom quantum control. The environment translates agent actions into physical laser waveforms targeting an $N$-qubit register.
 
-## 🚀 Try it Out
-| Interactive Demo | Academic Paper |
-| :--- | :--- |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/charleshusson75-cell/Pulser-gym/blob/main/demo.ipynb) | [📄 Download PDF](bridging_rl_quantum_paper.pdf) |
+## Interactive Demo and Documentation
+- **Interactive Demo**: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/charleshusson75-cell/Pulser-gym/blob/main/demo.ipynb)
+- **Whitepaper**: [Download PDF](bridging_rl_quantum_paper.pdf)
 
-You can explore the full Quantum RL pipeline (visualizations, training, and inference) directly in your browser via **Google Colab**, or run the `demo.ipynb` locally.
-
-## 📂 Project Structure
-The architecture is strictly modular following the Single Responsibility Principle, separating sequence translation, physics emulation, and scoring into sequential execution topologies to prevent decoupled data leakage.
+## Project Structure
+The repository is organized into a core environment package and auxiliary scripts for training and evaluation.
 
 ```text
 Pulser-gym/
-├── bridging_rl_quantum_paper.pdf                  # Full academic whitepaper
-├── demo.ipynb                                     # Interactive Jupyter demo
-├── README.md                                      # This file
-│
-└── pulser-gym-env/                                # Submodule core
-    ├── requirements.txt                           # Python dependencies (pulser, gymnasium, etc.)
-    │
-    ├── pulser_gym/                                # Core environment package
-    │   ├── __init__.py                                
-    │   ├── env_01_core.py                         # Gymnasium class encapsulating QutipEmulator
-    │   ├── sequence_02_translation.py             # Strictly mapping float actions to Pulser Sequences
-    │   └── reward_03_mis_scoring.py               # Graph mathematical Maximum Independent Set penalties
-    │
-    ├── tests/                                     # Validation environments
-    │   └── test_04_env_validation.py              # Live physics execution checks
-    │
-    └── scripts/                                   # RL interaction and inference layer
-        ├── train_05_ppo_agent.py                  # Stable-Baselines3 PPO generation
-        └── evaluate_06_inference.py               # Inference tracking over deterministic graphs
+├── bridging_rl_quantum_paper.pdf    # Academic whitepaper
+├── demo.ipynb                       # Interactive Jupyter notebook
+├── README.md                        # Project documentation
+└── pulser-gym-env/                  # Environment submodule
+    ├── requirements.txt             # Dependencies
+    ├── pulser_gym/                  # Core logic
+    │   ├── env_01_core.py           # Gymnasium environment class
+    │   ├── sequence_02_translation.py # Action-to-Pulse mapping
+    │   └── reward_03_mis_scoring.py # MIS reward/penalty logic
+    ├── tests/                       # Validation suite
+    └── scripts/                     # RL implementation
+        ├── train_05_ppo_agent.py    # PPO training script
+        └── evaluate_06_inference.py # Evaluation and plotting
 ```
 
-## ⚙️ Methodology
-The pipeline executes chaotic continuous gradients into mathematically bounded quantum topologies:
-1. **The Action Space:** The agent controls a continuous mathematical vector (normalized to [0, 1]), deterministically mapped onto a physical amplitude laser pulse bounded inside [0, 10] rad/us.
-2. **The Observation Protocol:** Exponential Hilbert-space scaling bottlenecks ($2^N$) are avoided by mapping the active physics into a condensed marginal probability array length $N$. Max-count 100-shot probability thresholds extracted natively inside the emulation physics cleanly filter quantum superposition to active discrete states natively.
-3. **The Penalty Layer:** The reward function evaluates the measured bitstring over the 2D atom coordinates extracted from the Pulser register. Each excited atom contributes +1.0; any two excited atoms within the $7.0\,\mu m$ Rydberg blockade radius incur a -2.0 penalty.
-4. **Machine Learning Integrations:** Stable-Baselines3 Proximal Policy Optimization (PPO) matrices explicitly navigate this space sequentially mapping continuous gradient descents dynamically cleanly without latency deadlock natively over the core emulator cleanly.
+## Methodology
+The environment maps classical control parameters into a quantum Hamiltonian simulation:
 
-## 🧪 How to Run / Reproduce
-This environment is orchestrated sequentially.
+1. **Action Space**: A 2D continuous vector representing laser **Amplitude** ([0, 10] rad/us) and **Detuning** ([-20, 20] rad/us).
+2. **Observation Space**: A vector of length $N$ representing the marginal probabilities of each qubit being in the Rydberg state ($|1\rangle$). Data is extracted via QutipEmulator using 100 shots per step.
+3. **Reward Function**: Designed for the Maximum Independent Set (MIS) problem on 2-D Euclidean lattices. It assigns +1.0 for each excited atom and a -2.0 penalty for any pair of excited atoms within the 7.0 $\mu$m blockade radius.
+4. **Learning Framework**: Uses the Proximal Policy Optimization (PPO) algorithm from Stable-Baselines3.
 
-1. **Install Dependencies \& Enter Submodule:**
-Launch standard terminal interfaces traversing explicitly inside the encapsulated Python pipeline:
+## Usage
+
+### 1. Installation
+Navigate to the environment directory and install the required packages:
 ```bash
 cd pulser-gym-env/
 pip install -r requirements.txt
 ```
 
-2. **Run the Validation and Physics Protocol (Phase 4):**
-Verify that the Gymnasium mathematical topology correctly maps into the backend Qutip physics emulation layer independently reliably accurately:
+### 2. Environment Validation
+Run the validation script to verify the integration between Gymnasium and the Pulser backend:
 ```bash
 python tests/test_04_env_validation.py
 ```
 
-3. **Train the RL Agent (Phase 5 Proof of Concept):**
-Execute the continuous parameter optimization layer utilizing Stable-Baselines3 natively correctly. Generates weights locally inside Models_Local:
+### 3. Training
+To train a PPO agent on a default 9-qubit grid:
 ```bash
 python scripts/train_05_ppo_agent.py
 ```
 
-4. **Launch Inference \& Visualization (Phase 6):**
-Conclusively link generated parameters properly into deterministically rendering offline charts. Final logic maps automatically to natively explicitly generate eval_plot.png.
+### 4. Inference and Plotting
+To evaluate a trained model and generate control waveforms:
 ```bash
 python scripts/evaluate_06_inference.py
 ```
